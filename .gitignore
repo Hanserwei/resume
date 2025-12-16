@@ -1,0 +1,37 @@
+# LaTeX build outputs
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.ist
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+
+# Minted / listings
+_minted*
+*.listing
+*.pyg
+
+# Generated PDFs
+*.pdf
+
+# Editor backups
+*~
+*.bak
+*.swp

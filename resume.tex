@@ -1,0 +1,95 @@
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external} % Simplified Chinese Support using external fonts (./fonts/zh_CN-Adobe/)
+%\usepackage{zh_CN-Adobefonts_internal} % Simplified Chinese Support using system fonts
+\usepackage{linespacing_fix} % disable extra space before next section
+\usepackage{cite}
+\usepackage{ragged2e} % For Justified alignment
+\usepackage{amsmath} % For \text command in math mode
+
+\begin{document}
+\pagenumbering{gobble} % suppress displaying page number
+
+% 个人信息和定位
+\name{伍维}
+\tagline{\textbf{求职意向：Java 后端开发工程师} \quad 离职-随时到岗}
+
+\basicInfo{
+  \email{hanserwei@qq.com} \textperiodcentered\ 
+  \phone{17628516882} \textperiodcentered\ 
+  \faLink\ \url{https://likeyy.love/} \textperiodcentered\ 
+  \faGithub\ \url{https://github.com/hanserwei} \textperiodcentered\ 
+  \faMapMarker\ 成都
+  }
+
+\section{个人简介}
+\begin{itemize}[parsep=0.4ex]
+  \item 2 年后端研发经验，熟悉 Java 21 及虚拟线程，能从 0-1 设计并交付高并发、高可用的微服务系统。
+  \item 具备从需求拆解、数据建模、接口设计到性能压测与优化的完整经验，善用缓存、异步与消息队列提升吞吐与可靠性。
+  \item 熟悉全链路工具链：CI/CD、日志与指标监控，能独立完成生产环境部署与稳定性治理。
+\end{itemize}
+ 
+\section{\texorpdfstring{\faCogs\ }{}专业技能}
+\begin{itemize}[parsep=0.5ex]
+  \item \textbf{语言与底层：} Java 8/17/21，熟悉虚拟线程、集合与并发包原理，理解 JVM 内存模型与常见 GC。
+  \item \textbf{框架与架构：} Spring Boot / Cloud Alibaba / MVC，MyBatis-Plus、JPA；掌握 IOC、AOP、服务注册配置、限流与熔断。
+  \item \textbf{存储与缓存：} MySQL/PG（索引、事务、MVCC）、Redis（数据结构、持久化、过期/淘汰策略），Caffeine + Redis 二级缓存。
+  \item \textbf{消息与异步：} RocketMQ，熟悉消息可靠性、幂等、顺序与积压处理。
+  \item \textbf{工程与运维：} Linux、Docker、Nginx，GitLab CI/CD；掌握日志采集、指标监控与告警的基本建设。
+  \item \textbf{前端与协作：} Vue3/TypeScript 可独立完成管理端页面。
+\end{itemize}
+
+\section{\texorpdfstring{\faUsers\ }{}工作经历}
+\datedsubsection{\textbf{国电南自}, 南京}{2024年7月 -- 2025年7月}
+\role{研发部}{研发工程师}
+\begin{itemize}
+  \item 主导智慧电厂监测平台不停服迁移重构：设计“双写+灰度切流”策略，批量迁移 1700W+ 告警日志至分库分表集群，迁移期业务零中断，核心查询性能提升约 5 倍。
+  \item 在采集链路接入异步双写与 RabbitMQ 补偿，结合 Redis 防重锁与 Canal Binlog 延迟校验修复，保障高并发写入的一致性与容灾。
+  \item 负责生产管理系统需求拆解与数据库建模，迭代 20+ 业务接口，交付准时率 100\%，并引入 Redis 缓存与异步落库，将核心接口 P95 耗时从 320ms 降至 120ms。
+  \item 搭建日志/指标监控与异常告警（SkyWalking + Prometheus），并参与公司 RAG 知识库与本地大模型服务落地，支撑日均 5k+ 调用，故障定位时间缩短 50\%+。
+\end{itemize}
+
+\section{\texorpdfstring{\faGraduationCap\ }{}教育背景}
+\datedsubsection{\textbf{西南交通大学} 211}{2020年9月 -- 2024年6月}
+\textit{本科}\ 电气工程与智能控制 (全日制)
+
+\section{\texorpdfstring{\faHeartO\ }{}荣誉奖项}
+\datedline{CET-6, 国家励志奖学金，学院奖学金}{2020-2023}
+
+\section{\texorpdfstring{\faCode\ }{}项目经历}
+
+\datedsubsection{\textbf{智慧电厂分布式设备监测数据平台（不停服迁移重构）}, 南京}{2024年8月 -- 2025年6月}
+\role{Java 后端开发工程师}{不停服迁移与分库分表 | 技术栈：Spring Boot, Spring Cloud Alibaba, MySQL 分库分表, RabbitMQ, Redis, Canal}
+\begin{onehalfspacing}
+\begin{itemize}
+  \item \textbf{不停服迁移方案：} 设计“双写+双读+灰度切流”，记录时间点 $T$ 区分存量/增量，离线 Task 分批搬迁 \textbf{1700W+ 告警日志} 至分库分表集群，迁移期业务零中断。
+  \item \textbf{异步双写与补偿：} 采集接口末端接入自定义线程池异步写新库，失败数据降级投递 RabbitMQ 补偿/死信重试，保证最终一致性。
+  \item \textbf{一致性校验与修复：} Canal 订阅新旧库 Binlog 做 \textbf{1s 延迟校验}，发现不一致自动以旧库为准修正，新库切读后核心查询性能提升约 5 倍。
+  \item \textbf{灰度切读与防重：} Nacos 配置动态控制读流量阶梯切换（$1\%\rightarrow 5\%\rightarrow 20\%\rightarrow 50\%\rightarrow 100\%$），Redis 分布式锁防重校验，异常时秒级回滚。
+\end{itemize}
+\end{onehalfspacing}
+
+\datedsubsection{\textbf{AI全流程模拟面试平台 (因AI面试)}, 成都}{2025年10月 -- 2025年11月}
+\role{后端开发兼前端开发}{技术栈：Spring AI, Java 21, pgvector, WebSocket\\ 体验地址：\url{https://interview.likeyy.love/}}
+\begin{onehalfspacing}
+生产级全栈后端项目，集成多个大模型能力和实时音频处理，实现从简历解析到报告生成的完整 AI 面试闭环。
+\begin{itemize}
+  \item \textbf{多模型实时交互：} 负责平台架构设计，\textbf{集成 DashScope 大模型}、\textbf{火山 ASR} 和 \textbf{TTS} 服务，实现面试全流程和实时语音交互。
+  \item \textbf{动态对话决策：} 实现 AI 面试官对回答质量的实时评估与追问/跳题决策，平均面试时长缩短 20\%，交互更贴合候选人水平。
+  \item \textbf{并发与流式处理：} JDK 21 虚拟线程并行生成评估报告，STOMP WebSocket 推送状态（QUEUED $\rightarrow$ RUNNING $\rightarrow$ SUCCESS），端到端延迟下降 35\%。
+  \item \textbf{RAG智能推荐：} PostgreSQL + pgvector 存储题目向量，Spring AI 检索生成推荐题单；基于报告薄弱项做相似度召回，匹配度提升显著。
+\end{itemize}
+\end{onehalfspacing}
+
+\datedsubsection{\textbf{Han-note (仿小红书社区项目)}, 成都}{2025年7月 -- 2025年9月}
+\role{Java 后端开发工程师}{微服务分布式架构 | 技术栈：Spring Cloud Alibaba, RocketMQ, Redis, Elasticsearch, xxl-job, Canal\\ 仓库：\url{https://gitea.likeyy.love/Hanserwei/han-note}}
+\begin{onehalfspacing}
+基于微服务分布式架构，设计并从0落地高并发、高可用的仿小红书社区平台，支撑海量用户读写和数据一致性要求。
+\begin{itemize}
+  \item \textbf{高并发写处理：} 针对点赞、关注等高频写操作，引入 Redis Roaring Bitmap 高性能判断用户状态，结合 RocketMQ 异步落库和 RateLimiter 令牌桶进行流量削峰，保障数据库稳定。
+  \item \textbf{高性能读优化：} Redis + Caffeine 二级缓存支撑笔记详情/用户信息的\textbf{高并发读请求}，设计防击穿/穿透/雪崩策略（预热、空值、随机过期）。
+  \item \textbf{分布式与一致性：} 接入美团 Leaf 分布式 ID，单节点吞吐量达 $\text{22000+}/\text{s}$；RocketMQ 事件驱动保障集群缓存最终一致性，幂等由去重表 + 业务唯一键控制。
+  \item \textbf{实时搜索与监控：} Canal 监听 Binlog 增量同步至 Elasticsearch，笔记/用户索引延迟控制在秒级；接入 Prometheus + Grafana 监控 QPS/RT/失败率。
+\end{itemize}
+\end{onehalfspacing}
+
+\end{document}

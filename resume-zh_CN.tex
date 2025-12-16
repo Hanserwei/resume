@@ -1,0 +1,76 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+% !Mode:: "TeX:UTF-8"
+
+\documentclass{resume}
+\usepackage{zh_CN-Adobefonts_external} % Simplified Chinese Support using external fonts (./fonts/zh_CN-Adobe/)
+%\usepackage{zh_CN-Adobefonts_internal} % Simplified Chinese Support using system fonts
+\usepackage{linespacing_fix} % disable extra space before next section
+\usepackage{cite}
+\usepackage{ragged2e} % For Justified alignment
+\usepackage{amsmath} % For \text command in math mode
+
+\begin{document}
+\pagenumbering{gobble} % suppress displaying page number
+
+% 个人信息和定位
+\name{伍维 \quad\quad\quad \small{\textbf{求职意向：Java 后端开发工程师} \quad \small{离职-随时到岗}}}
+
+\basicInfo{
+  \email{hanserwei@qq.com} \textperiodcentered\ 
+  \phone{17628516882} \textperiodcentered\ 
+  \faLink\ \url{https://likeyy.love/}
+  }
+ 
+\section{\faCogs\ 专业技能}
+\begin{itemize}[parsep=0.5ex]
+  \item 熟练掌握Java基础，熟悉Java21的虚拟线程等新特性，了解常用集合底层原理，熟悉JUC并发编程，对synchronized，volatile等底层有过了解，了解JVM（内存加载机制、JVM内存模型、常见的垃圾回收机制）；
+  \item 熟练使用Spring Boot，Spring Cloud Alibaba、Spring MVC，MyBatis，MyBatis-plus，JPA等常见框架，熟悉Spring IOC、Spring AOP的原理，了解Spring Cloud等分布式架构；
+  \item 熟悉MySQL数据库的使用，了解其基本架构（MySQL索引、事务、MVCC等），掌握PostgreSQL数据库的基本使用；
+  \item 熟悉Redis数据库，了解其基本数据类型和对应的应用场景，了解Redis持久化和过期删除策略等；
+  \item 了解RocketMQ消息队列的使用，掌握对消息可靠性、幂等性和消息积压等的处理；
+  \item 熟悉HTML、CSS、JavaScript、TypeScript以及Vue3，可以完成一般前端页面的开发；
+  \item 熟练使用Linux常用命令，拥有使用Docker从零到一容器化部署项目的能力。
+\end{itemize}
+
+\section{\faUsers\ 工作经历}
+\datedsubsection{\textbf{国电南自}, 南京}{2024年7月 -- 2025年7月}
+\role{研发部}{研发工程师}
+\begin{itemize}
+  \item 负责公司内部系统的开发和维护，参与需求分析、数据库设计、接口开发等工作，主要使用 Java、Spring Boot、MySQL 等技术。
+  \item 参与搭建公司 RAG 知识库以及本地大模型部署的相关工作，负责知识库服务的技术选型、服务搭建与需求设计。
+\end{itemize}
+
+\section{\faGraduationCap\ 教育背景}
+\datedsubsection{\textbf{西南交通大学} 211}{2020年9月 -- 2024年6月}
+\textit{本科}\ 电气工程 (全日制)
+
+\section{\faHeartO\ 荣誉奖项}
+\datedline{CET-6, 国家励志奖学金，学院奖学金}{2020-2023}
+
+\section{\faCode\ 项目经历}
+\datedsubsection{\textbf{Han-note (仿小红书社区项目)}, 成都}{2025年7月 -- 2025年9月}
+\role{Java 后端开发工程师}{微服务分布式架构 | 技术栈：Spring Cloud Alibaba, RocketMQ, Redis, Elasticsearch}
+\begin{onehalfspacing}
+基于微服务分布式架构，设计并从0落地高并发、高可用的仿小红书社区平台，支撑海量用户读写和数据一致性要求。
+\begin{itemize}
+  \item \textbf{高并发写处理：} 针对点赞、关注等高频写操作，引入 Redis Roaring Bitmap 高性能判断用户状态，结合 RocketMQ 异步落库和 RateLimiter 令牌桶进行流量削峰，保障数据库稳定。
+  \item \textbf{高性能读优化：} 通过 Redis + Caffeine 本地缓存构建二级缓存，有效支撑笔记详情、用户信息查询的\textbf{高并发读请求}，成功解决了缓存雪崩/穿透/击穿问题。
+  \item \textbf{分布式与一致性：} 整合并部署美团 Leaf 分布式 ID 服务，单节点吞吐量达 $\text{22000+}/\text{s}$，日承载 $\text{19}$ 亿+次 ID 生成。设计基于 RocketMQ 的消息驱动机制，保障集群环境下缓存的最终一致性。
+  \item \textbf{实时搜索：} 基于 Canal 实时监听 MySQL Binlog，自定义事件处理器实时同步增量数据至 Elasticsearch，实现笔记/用户搜索的\textbf{毫秒级实时索引构建}。
+\end{itemize}
+\end{onehalfspacing}
+
+\datedsubsection{\textbf{AI全流程模拟面试平台 (因AI面试)}, 成都}{2025年10月 -- 2025年11月}
+\role{后端开发兼前端开发}{技术栈：Spring AI, Java 21, pgvector, WebSocket}
+\begin{onehalfspacing}
+生产级全栈后端项目，集成多个大模型能力和实时音视频处理，实现从简历解析到报告生成的完整 AI 面试闭环。
+\begin{itemize}
+  \item \textbf{多模型实时交互：} 负责平台架构设计，\textbf{集成 DashScope 大模型}、\textbf{火山 ASR} 和 \textbf{TTS} 服务，实现面试全流程和实时语音交互。
+  \item \textbf{动态对话决策：} 实现 AI 智能面试官的动态交互逻辑，根据候选人回答质量，自动判断执行追问、转入下一题或结束面试的决策。
+  \item \textbf{并发与流式处理：} 引入 \textbf{JDK 21 虚拟线程} 异步生成复杂评估报告，并利用 \textbf{STOMP WebSocket} 实时推送报告进度（QUEUED $\rightarrow$ SUCCESS）。
+  \item \textbf{RAG智能推荐：} 利用 \textbf{PostgreSQL 的 pgvector 扩展} 和 Spring AI pgvector-store，实现题目向量存储和检索。基于报告中的薄弱点，\textbf{进行相似度搜索}，返回个性化练习题库。
+\end{itemize}
+\end{onehalfspacing}
+
+\end{document}
