@@ -55,30 +55,32 @@
 \datedsubsection{\textbf{智慧电厂分布式设备监测数据平台（不停服迁移重构）}, 南京}{2024年8月 -- 2025年6月}
 \role{Java 后端开发工程师}{不停服迁移与分库分表 | 技术栈：Spring Boot, Spring Cloud Alibaba, MySQL 分库分表, RabbitMQ, Redis, Canal}
 \begin{onehalfspacing}
+面向华东区域火电厂的在线监测与告警平台原有单库存储接近瓶颈，业务需 7x24 稳定运行且不可停机；团队需在不停服前提下完成分库分表重构并确保迁移期数据一致、告警不中断。
 \begin{itemize}
-  \item \textbf{不停服迁移方案：} 设计“双写+双读+灰度切流”，记录时间点 $T$ 区分存量/增量，离线 Task 分批搬迁 \textbf{1700W+ 告警日志} 至分库分表集群，迁移期业务零中断。
-  \item \textbf{异步双写与补偿：} 采集接口末端接入自定义线程池异步写新库，失败数据降级投递 RabbitMQ 补偿/死信重试，保证最终一致性。
-  \item \textbf{一致性校验与修复：} Canal 订阅新旧库 Binlog 做 \textbf{1s 延迟校验}，发现不一致自动以旧库为准修正，新库切读后核心查询性能提升约 5 倍。
-  \item \textbf{灰度切读与防重：} Nacos 配置动态控制读流量阶梯切换（$1\%\rightarrow 5\%\rightarrow 20\%\rightarrow 50\%\rightarrow 100\%$），Redis 分布式锁防重校验，异常时秒级回滚。
+  \item \textbf{项目职责：} 牵头数据迁移总体方案调研与流程设计，确定“存量迁移 + 增量双写 + 双读 + 切读 + 切写 + 一致性校验”闭环；主导补偿逻辑与新旧库比对策略，面向电厂告警/监测全量场景对齐业务指标。
+  \item \textbf{不停服迁移方案：} 记录边界时间点 $T$ 区分存量/增量，单机 Task 以 1000 条/批读取老库，分批搬迁 \textbf{1700W+ 告警日志} 至分库分表集群，迁移期间业务零中断。
+  \item \textbf{双写与补偿闭环：} 业务写请求保持老库主链路，在原逻辑尾部接入自定义线程池异步写新库，失败降级投递 RabbitMQ 做兜底补偿/死信重试，切写前持续保障最终一致性。
+  \item \textbf{双读与一致性校验：} 灰度阶段读老库返回业务，异步线程池读新库做数比对并修复；Canal -A/-B 订阅新旧库 Binlog \textbf{延迟 2s 校验}，以老库为准修正，Redis 分布式锁避免重复校验。
+  \item \textbf{灰度切流与收敛：} 按 $1\%\rightarrow 2\%\rightarrow 5\%\rightarrow 10\%\rightarrow 20\%\rightarrow 50\%\rightarrow 70\%\rightarrow 100\%$ 灰度切读，验证稳定后切写下线老库，核心查询性能提升约 5 倍。
 \end{itemize}
 \end{onehalfspacing}
 
 \datedsubsection{\textbf{电力交易与调度数据统一报送系统（单体架构）}, 南京}{2024年 -- 2025年}
 \role{Java 后端开发工程师}{高吞吐采集与报送网关 | 技术栈：Spring Boot, MySQL 分库分表, RabbitMQ, Redis, XXL-JOB, MyBatis-Plus}
 \begin{onehalfspacing}
-面向省区节点部署的高性能单体应用，负责场站发电交易/结算数据的采集清洗、持久化写入分库分表集群，并向调度中心可靠上送。
+面向省区节点部署的高性能单体应用，负责场站发电交易/调度数据的采集清洗、持久化写入分库分表集群，并向调度中心可靠上送；本人承担链路稳定性与高吞吐落地。
 \begin{itemize}
-  \item \textbf{分库分表落地：} 负责报送明细表水平拆分与路由实现（按 \texttt{station\_id} 取模分片），结合 MyBatis-Plus 动态表名能力完成 SQL 自动改写，缓解单表写入瓶颈。
-  \item \textbf{削峰与异步写入：} 基于 RabbitMQ 设计“生产-消费”异步链路，平滑早晚高峰流量冲击；消费端仅在写入成功后 \textbf{Manual Ack}，失败按策略重试并进入 DLQ 兜底。
+  \item \textbf{分库分表落地：} 负责报送明细表水平拆分与路由实现（按 \texttt{station\_id} 取模分片），结合 MyBatis-Plus 动态表名能力完成 SQL 自动改写，缓解单表写入瓶颈，满足电力交易高并发报文落库。
+  \item \textbf{削峰与异步写入：} 基于 RabbitMQ 设计“生产-消费”异步链路，平滑早晚高峰流量冲击；消费端仅在写入成功后 \textbf{Manual Ack}，失败按策略重试并进入 DLQ 兜底，提升报送到达率。
   \item \textbf{幂等与防重：} 在库表建立联合唯一约束（\texttt{station\_id, trade\_no}），并在入口侧引入 Redis 短时缓存/布隆过滤器预判，降低重复报文对数据库的冲击。
-  \item \textbf{稳定性与补偿：} 使用 XXL-JOB 分片广播在低峰期并行汇总上报；外部接口超时触发降级，将报文转存 MQ 异步推送，避免外部故障占满业务线程池。
+  \item \textbf{稳定性与补偿：} 使用 XXL-JOB 分片广播在低峰期并行汇总上报；外部接口超时触发降级，将报文转存 MQ 异步推送，避免外部故障占满业务线程池，确保调度中心侧准时可用。
 \end{itemize}
 \end{onehalfspacing}
 
 \datedsubsection{\textbf{AI全流程模拟面试平台 (因AI面试)}, 成都}{2025年10月 -- 2025年11月}
 \role{后端开发兼前端开发}{技术栈：Spring AI, Java 21, pgvector, WebSocket\\ 体验地址：\url{https://interview.likeyy.love/}}
 \begin{onehalfspacing}
-生产级全栈后端项目，集成多个大模型能力和实时音频处理，实现从简历解析到报告生成的完整 AI 面试闭环。
+生产级全栈后端项目，集成多个大模型能力和实时音频处理，实现从简历解析到报告生成的完整 AI 面试闭环，本人负责后端架构与实时交互链路。
 \begin{itemize}
   \item \textbf{多模型实时交互：} 负责平台架构设计，\textbf{集成 DashScope 大模型}、\textbf{火山 ASR} 和 \textbf{TTS} 服务，实现面试全流程和实时语音交互。
   \item \textbf{动态对话决策：} 实现 AI 面试官对回答质量的实时评估与追问/跳题决策，平均面试时长缩短 20\%，交互更贴合候选人水平。
@@ -90,7 +92,7 @@
 \datedsubsection{\textbf{Han-note (仿小红书社区项目)}, 成都}{2025年7月 -- 2025年9月}
 \role{Java 后端开发工程师}{微服务分布式架构 | 技术栈：Spring Cloud Alibaba, RocketMQ, Redis, Elasticsearch, xxl-job, Canal\\ 仓库：\url{https://gitea.likeyy.love/Hanserwei/han-note}}
 \begin{onehalfspacing}
-基于微服务分布式架构，设计并从0落地高并发、高可用的仿小红书社区平台，支撑海量用户读写和数据一致性要求。
+基于微服务分布式架构，主导并从 0 落地高并发、高可用的仿小红书社区平台，支撑海量用户读写和数据一致性要求。
 \begin{itemize}
   \item \textbf{高并发写处理：} 针对点赞、关注等高频写操作，引入 Redis Roaring Bitmap 高性能判断用户状态，结合 RocketMQ 异步落库和 RateLimiter 令牌桶进行流量削峰，保障数据库稳定。
   \item \textbf{高性能读优化：} Redis + Caffeine 二级缓存支撑笔记详情/用户信息的\textbf{高并发读请求}，设计防击穿/穿透/雪崩策略（预热、空值、随机过期）。
